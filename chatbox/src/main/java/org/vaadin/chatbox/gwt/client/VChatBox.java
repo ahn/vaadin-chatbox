@@ -51,6 +51,8 @@ public class VChatBox extends VAbstractDiffSyncComponent<Chat, ChatDiff>
 		}
 
 		chatWidget.setEnabled(userId != null);
+		
+		chatWidget.setShowMyNick(uidl.getBooleanAttribute("showmynick"));
 
 		if (uidl.hasAttribute("listening")) {
 			setListeningClicks(uidl.getBooleanAttribute("listening"));
@@ -114,7 +116,7 @@ public class VChatBox extends VAbstractDiffSyncComponent<Chat, ChatDiff>
 
 	@Override
 	protected Chat getValue() {
-		Chat c = new Chat(chatWidget.getFrozenLines(), chatWidget.getLiveLines(), null);
+		Chat c = new Chat(chatWidget.getFrozenLines(), chatWidget.getLiveLines());
 		return c;
 	}
 

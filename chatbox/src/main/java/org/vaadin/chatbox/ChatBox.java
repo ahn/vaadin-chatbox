@@ -39,6 +39,7 @@ public class ChatBox extends AbstractDiffSyncComponent<Chat, ChatDiff> {
 	private String userId;
 	private String userName;
 	private String userStyle;
+	private boolean showMyNick = true;
 
 	public ChatBox(Shared<Chat, ChatDiff> shared) {
 		super(shared);
@@ -53,6 +54,13 @@ public class ChatBox extends AbstractDiffSyncComponent<Chat, ChatDiff> {
 		this.userStyle = userStyle;
 		requestRepaint();
 	}
+	
+	public void setShowMyNick(boolean show) {
+		if (showMyNick != show) {
+			showMyNick = show;
+			requestRepaint();
+		}
+	}
 
 	@Override
 	public void paintContent(PaintTarget target) throws PaintException {
@@ -65,6 +73,7 @@ public class ChatBox extends AbstractDiffSyncComponent<Chat, ChatDiff> {
 			}
 		}
 		target.addAttribute("listening", !userListeners.isEmpty() || !itemListeners.isEmpty());
+		target.addAttribute("showmynick", showMyNick);
 	}
 
 	@Override

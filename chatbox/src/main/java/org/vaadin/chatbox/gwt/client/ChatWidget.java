@@ -175,6 +175,10 @@ public class ChatWidget extends DockLayoutPanel {
 		super.setWidth(width);
 		refreshWidth();
 	}
+	
+	public void setShowMyNick(boolean show) {
+		nameLabel.setVisible(show);
+	}
 
 	private LinkedList<ChatLine> liveLines = new LinkedList<ChatLine>();
 	private LinkedList<ChatLine> frozenLines = new LinkedList<ChatLine>();
