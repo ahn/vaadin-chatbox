@@ -24,15 +24,22 @@ public class SentNotifier implements Listener<ChatDiff> {
 		if (collaboratorId==SharedChat.NO_COLLABORATOR_ID) {
 			return;
 		}
-		n++;
+		incr();
 		timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				n--;
-				if (n==0) {
+				if (decr()==0) {
 					String date = longFormat.format(new Date(new Date().getTime()-delay));
 					chat.newLine("Sent on " + date+"");
 				}
 			}}, delay);
+	}
+	
+	synchronized private int incr() {
+		return ++n;
+	}
+	
+	synchronized private int decr() {
+		return --n;
 	}
 }
