@@ -17,7 +17,7 @@ public class ChatWidgetLine extends FlowPanel {
 			"{{([^:}]*):([^:}]*):([^:}]*)}}", "g");
 	
 	private static final RegExp URL_RE = RegExp.compile(
-			"(http(?:s)?://[^ ]+)", "g");
+			"(\\b(?:http(?:s)?://|www\\.[^ .]+\\.)[^ ]+)", "g");
 	
 	private final ChatWidget parent;
 	private boolean clickableUsers = true;
@@ -74,7 +74,11 @@ public class ChatWidgetLine extends FlowPanel {
 	}
 	
 	private Widget createUrlLabel(MatchResult r) {
-		Anchor a = new Anchor(r.getGroup(1), r.getGroup(1), "_blank");
+		String href = r.getGroup(1);
+		if (href.startsWith("www")) {
+			href = "http://"+href;
+		}
+		Anchor a = new Anchor(r.getGroup(1), href, "_blank");
 		return a;
 	}
 
