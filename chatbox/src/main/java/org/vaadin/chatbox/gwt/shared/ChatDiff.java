@@ -83,7 +83,7 @@ public class ChatDiff implements Diff<Chat> {
 			newLive = newLive.subList(toBeFrozen.size(), newLive.size());
 		}
 
-		return new Chat(newFrozen, newLive, null);
+		return new Chat(newFrozen, newLive);
 	}
 
 	public boolean isIdentity() {

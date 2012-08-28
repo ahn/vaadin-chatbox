@@ -1,6 +1,5 @@
 package org.vaadin.chatbox.gwt.shared;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -25,7 +24,7 @@ public class Chat implements Iterable<ChatLine> {
 	}
 	
 	
-	public Chat(List<ChatLine> frozenLines, List<ChatLine> liveLines, List<ArrayList<ChatLine>> archives) {
+	public Chat(List<ChatLine> frozenLines, List<ChatLine> liveLines) {
 		if (frozenLines==null) {
 			this.frozenLines = Collections.emptyList();
 		}
@@ -39,6 +38,10 @@ public class Chat implements Iterable<ChatLine> {
 		else {
 			this.liveLines = liveLines;
 		}
+	}
+	
+	public Chat(List<ChatLine> frozenLines) {
+		this(frozenLines, null);
 	}
 	
 	public List<ChatLine> getFrozenLines() {
