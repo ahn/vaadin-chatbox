@@ -1,0 +1,44 @@
+/* Widget specific CSS goes here */
+/* When renaming this directory, update the path in the widgetset GWT module (.gwt.xml) */
+
+.ChatBox {
+	
+}
+
+.ChatBox .ChatPanel {
+	background-color: white;
+	border: 1px solid gray;
+}
+
+.ChatBox .gwt-TextBox {
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
+.ChatBox .ChatPanel table {
+	border-spacing: 0;
+}
+
+.ChatBox .user1 {
+	color: black;
+	font-weight: bold;
+}
+/* TODO: could make more user styles, or something... */
+
+.ChatBox .FrozenLines {
+	padding: 0;
+	margin: 0;
+}
+
+.ChatBox .LiveLines {
+	padding: 0;
+	margin: 0;
+}
+
+.ChatBox .LiveLines .chattext {
+	color: gray;
+}
+
+.ChatBox .FrozenLines .infotext {
+    color: #5555AA;
+}
