@@ -27,7 +27,7 @@ public class ChatBoxDemo extends Application {
 	
 	@Override
 	public void init() {
-		setMainWindow(new ChatBoxDemoWindow());
+		setMainWindow(new ChatBoxDemoWindow());		
 	}
 	
 	// Subclassing Window and overriding getWindow to make multiple tabs work.
