@@ -44,6 +44,8 @@ public class ChatBoxDemo extends Application {
 			chatBox = new ChatBox(sharedChat);
 			chatBox.setSizeFull();
 			
+			chatBox.setMaxNumLinesToLoad(1000);
+			
 			// Polling every 500ms for changes.
 			chatBox.setPollInterval(500);
 			// If you use Vaadin Refresher, ICEPush, DontPush or

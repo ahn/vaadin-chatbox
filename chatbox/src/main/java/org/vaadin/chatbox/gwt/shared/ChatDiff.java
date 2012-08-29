@@ -89,8 +89,12 @@ public class ChatDiff implements Diff<Chat> {
 	public boolean isIdentity() {
 		return addedFrozen.isEmpty() && addedLive.isEmpty() && freezeLive==0;
 	}
-
+	
 	public static ChatDiff diff(Chat v1, Chat v2) {
+		return diff(v1, v2, -1);
+	}
+
+	public static ChatDiff diff(Chat v1, Chat v2, int maxLines) {
 		LinkedList<ChatLine> addedFrozen;
 		int fs1 = v1.getFrozenLinesSize();
 		int fs2 = v2.getFrozenLinesSize();
@@ -98,6 +102,11 @@ public class ChatDiff implements Diff<Chat> {
 			addedFrozen = null;
 		} else {
 			addedFrozen = new LinkedList<ChatLine>();
+			if (maxLines >= 0 && fs2-fs1 > maxLines) {
+				int missing = fs2 - fs1 - maxLines;
+				fs1 = fs2 - maxLines;
+				addedFrozen.add(new ChatLine("("+missing+" earlier lines not loaded)"));
+			}
 			for (int i = fs1; i < fs2; ++i) {
 				addedFrozen.add(v2.getFrozenLine(i));
 			}

@@ -40,6 +40,7 @@ public class ChatBox extends AbstractDiffSyncComponent<Chat, ChatDiff> {
 	private String userName;
 	private String userStyle;
 	private boolean showMyNick = true;
+	private int maxNumLinesToLoad = -1;
 
 	public ChatBox(Shared<Chat, ChatDiff> shared) {
 		super(shared);
@@ -60,6 +61,16 @@ public class ChatBox extends AbstractDiffSyncComponent<Chat, ChatDiff> {
 			showMyNick = show;
 			requestRepaint();
 		}
+	}
+	
+	/**
+	 * Set the maximum number of lines to be loaded from the server when
+	 * loading ChatBox for the first time.
+	 * 
+	 * @param num max number of lines, or negative for no limit (default)
+	 */
+	public void setMaxNumLinesToLoad(int num) {
+		maxNumLinesToLoad = num;
 	}
 
 	@Override
@@ -101,7 +112,7 @@ public class ChatBox extends AbstractDiffSyncComponent<Chat, ChatDiff> {
 
 	@Override
 	protected ChatDiff diff(Chat v1, Chat v2) {
-		ChatDiff d = ChatDiff.diff(v1, v2);
+		ChatDiff d = ChatDiff.diff(v1, v2, maxNumLinesToLoad);
 		return d;
 	}
 
@@ -143,5 +154,4 @@ public class ChatBox extends AbstractDiffSyncComponent<Chat, ChatDiff> {
 		ChatDiff d = new ChatDiff(null, lines, 0);
 		return d;
 	}
-
 }
