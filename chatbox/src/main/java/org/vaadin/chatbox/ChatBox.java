@@ -40,6 +40,7 @@ public class ChatBox extends AbstractDiffSyncComponent<Chat, ChatDiff> {
 	private String userName;
 	private String userStyle;
 	private boolean showMyNick = true;
+	private boolean showSendButton = false;
 	private int maxNumLinesToLoad = -1;
 
 	public ChatBox(Shared<Chat, ChatDiff> shared) {
@@ -59,6 +60,13 @@ public class ChatBox extends AbstractDiffSyncComponent<Chat, ChatDiff> {
 	public void setShowMyNick(boolean show) {
 		if (showMyNick != show) {
 			showMyNick = show;
+			requestRepaint();
+		}
+	}
+	
+	public void setShowSendButton(boolean show) {
+		if (showSendButton != show) {
+			showSendButton = show;
 			requestRepaint();
 		}
 	}
@@ -85,6 +93,7 @@ public class ChatBox extends AbstractDiffSyncComponent<Chat, ChatDiff> {
 		}
 		target.addAttribute("listening", !userListeners.isEmpty() || !itemListeners.isEmpty());
 		target.addAttribute("showmynick", showMyNick);
+		target.addAttribute("showsendbutton", showSendButton);
 	}
 
 	@Override

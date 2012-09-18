@@ -53,6 +53,8 @@ public class VChatBox extends VAbstractDiffSyncComponent<Chat, ChatDiff>
 		chatWidget.setEnabled(userId != null);
 		
 		chatWidget.setShowMyNick(uidl.getBooleanAttribute("showmynick"));
+		
+		chatWidget.setShowSendButton(uidl.getBooleanAttribute("showsendbutton"));
 
 		if (uidl.hasAttribute("listening")) {
 			setListeningClicks(uidl.getBooleanAttribute("listening"));

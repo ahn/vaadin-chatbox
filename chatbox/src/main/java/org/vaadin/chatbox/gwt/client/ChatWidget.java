@@ -15,10 +15,13 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -73,19 +76,21 @@ public class ChatWidget extends DockLayoutPanel {
 		vp.add(liveTable);
 	}
 
-	private FlowPanel inputPanel = new FlowPanel();
+	private HorizontalPanel inputPanel = new HorizontalPanel();
 	{
+		inputPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		inputPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		inputPanel.setWidth("100%");
 	}
 	
 	private InlineLabel nameLabel = new InlineLabel();
 	{
+		nameLabel.setWordWrap(false);
 		inputPanel.add(nameLabel);
 	}
 
 	private TextBox chatInput = new TextBox();
 	{
-		chatInput.setWidth("100%");
 		inputPanel.add(chatInput);
 		
 		// Up and down arrows to browse what I've written earlier.
@@ -169,6 +174,11 @@ public class ChatWidget extends DockLayoutPanel {
 		}
 		return false;
 	}
+	
+	public void setShowSendButton(boolean show) {
+		sendButton.setVisible(show);
+		refreshWidth();
+	}
 
 	@Override
 	public void setWidth(String width) {
@@ -191,6 +201,8 @@ public class ChatWidget extends DockLayoutPanel {
 		
 		this.addSouth(inputPanel, 28);
 		this.add(chatPanel);
+		
+		DOM.setStyleAttribute(inputPanel.getElement(), "cssFloat", "right");
 	}
 
 	private void textInputted(String msg) {
@@ -240,7 +252,9 @@ public class ChatWidget extends DockLayoutPanel {
 	}
 
 	private void refreshWidth() {
-		chatInput.setWidth((getOffsetWidth()-nameLabel.getOffsetWidth()-75) + "px");
+		int MAGIC_NUMBER_PX = 12;
+		int w = getOffsetWidth()-nameLabel.getOffsetWidth()-sendButton.getOffsetWidth();
+		chatInput.setWidth((w-MAGIC_NUMBER_PX) + "px");
 	}
 
 	public void removeLiveLines(int removedLive) {
