@@ -72,11 +72,6 @@ public class VChatBox extends VAbstractDiffSyncComponent<Chat, ChatDiff>
 	}
 
 	@Override
-	protected Chat initialValue() {
-		return Chat.EMPTY_CHAT;
-	}
-
-	@Override
 	protected ChatDiff diff(Chat v1, Chat v2) {
 		ChatDiff d = ChatDiff.diff(v1, v2);
 		return d;
@@ -160,13 +155,13 @@ public class VChatBox extends VAbstractDiffSyncComponent<Chat, ChatDiff>
 	public void userClicked(String userId) {
 		getClient().updateVariable(getPaintableId(), "userclicked", userId,
 				false);
-		valueChangedSendASAP();
+		valueChangedSendEvenIfIdentityASAP();
 	}
 
 	public void itemClicked(String itemId) {
 		getClient().updateVariable(getPaintableId(), "itemclicked", itemId,
 				false);
-		valueChangedSendASAP();
+		valueChangedSendEvenIfIdentityASAP();
 	}
 
 }

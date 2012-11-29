@@ -5,10 +5,11 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.vaadin.chatbox.gwt.shared.Chat;
 import org.vaadin.chatbox.gwt.shared.ChatDiff;
 import org.vaadin.diffsync.Shared.Listener;
 
-public class SentNotifier implements Listener<ChatDiff> {
+public class SentNotifier implements Listener<Chat, ChatDiff> {
 	private final static SimpleDateFormat longFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm z");
 	private final Timer timer = new Timer();
 	private final SharedChat chat;
@@ -20,7 +21,7 @@ public class SentNotifier implements Listener<ChatDiff> {
 		this.delay = delayMs;
 	}
 	
-	public void changed(ChatDiff diff, long collaboratorId) {
+	public void changed(Chat newValue, ChatDiff diff, long collaboratorId) {
 		if (collaboratorId==SharedChat.NO_COLLABORATOR_ID) {
 			return;
 		}

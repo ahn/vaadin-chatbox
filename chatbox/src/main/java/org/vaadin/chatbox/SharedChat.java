@@ -4,7 +4,7 @@ package org.vaadin.chatbox;
 import org.vaadin.chatbox.gwt.shared.Chat;
 import org.vaadin.chatbox.gwt.shared.ChatDiff;
 import org.vaadin.chatbox.gwt.shared.ChatLine;
-import org.vaadin.diffsync.DiffCalculator;
+import org.vaadin.diffsync.DiffTask;
 import org.vaadin.diffsync.Shared;
 
 /**
@@ -31,12 +31,8 @@ public class SharedChat extends Shared<Chat, ChatDiff> {
 		applyDiff(ChatDiff.newLiveLine(line));
 	}
 	
-	private static class Freezer implements DiffCalculator<Chat, ChatDiff> {
-		public boolean needsToRunAfter(ChatDiff diff, long byCollaboratorId) {
-			return true;
-		}
-
-		public ChatDiff calcDiff(Chat value) throws InterruptedException {
+	private static class Freezer implements DiffTask<Chat, ChatDiff> {
+		public ChatDiff exec(Chat value, ChatDiff diff, long collaboratorId) {
 			return ChatDiff.freezeLive(value.getLiveLinesSize());
 		}
 	}

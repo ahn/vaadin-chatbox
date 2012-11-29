@@ -115,14 +115,11 @@ public class ChatBox extends AbstractDiffSyncComponent<Chat, ChatDiff> {
 	}
 
 	@Override
-	protected Chat initialValue() {
-		return Chat.EMPTY_CHAT;
-	}
-
-	@Override
 	protected ChatDiff diff(Chat v1, Chat v2) {
-		ChatDiff d = ChatDiff.diff(v1, v2, maxNumLinesToLoad);
-		return d;
+		if (v1==null) {
+			v1 = Chat.EMPTY_CHAT;
+		}
+		return ChatDiff.diff(v1, v2, maxNumLinesToLoad);
 	}
 
 	@Override

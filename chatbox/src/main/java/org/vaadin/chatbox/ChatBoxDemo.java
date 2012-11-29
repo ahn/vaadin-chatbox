@@ -46,13 +46,6 @@ public class ChatBoxDemo extends Application {
 			
 			chatBox.setMaxNumLinesToLoad(1000);
 			
-			// Polling every 500ms for changes.
-			chatBox.setPollInterval(500);
-			// If you use Vaadin Refresher, ICEPush, DontPush or
-			// some other way to get the changes from server to client,
-			// poll interval should be set to 0 => no polling
-			// chatBox.setPollInterval(0);
-			
 			final TextField tf = new TextField("Nick:");
 			final Button b = new Button("Join Chat");
 			b.addListener(new ClickListener() {

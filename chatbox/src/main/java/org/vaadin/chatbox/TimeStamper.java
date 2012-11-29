@@ -5,9 +5,9 @@ import java.util.Calendar;
 
 import org.vaadin.chatbox.gwt.shared.Chat;
 import org.vaadin.chatbox.gwt.shared.ChatDiff;
-import org.vaadin.diffsync.DiffCalculator;
+import org.vaadin.diffsync.DiffTask;
 
-public class TimeStamper implements DiffCalculator<Chat, ChatDiff> {
+public class TimeStamper implements DiffTask<Chat, ChatDiff> {
 	
 	private final static SimpleDateFormat longFormat = new SimpleDateFormat("[yyyy-MM-dd HH:mm z]");
 	private final static SimpleDateFormat shortFormat = new SimpleDateFormat("[HH:mm]");
@@ -19,12 +19,8 @@ public class TimeStamper implements DiffCalculator<Chat, ChatDiff> {
 	public TimeStamper(long collId) {
 		this.collId = collId;
 	}
-	
-	public boolean needsToRunAfter(ChatDiff diff, long byCollaboratorId) {
-		return byCollaboratorId!=collId && !diff.isIdentity();
-	}
 
-	public ChatDiff calcDiff(Chat value) throws InterruptedException {
+	public ChatDiff exec(Chat value, ChatDiff diff, long collaboratorId) {
 		Calendar cal = Calendar.getInstance();
 		int day = cal.get(Calendar.DAY_OF_YEAR);
 		int minute = cal.get(Calendar.MINUTE);
