@@ -35,6 +35,11 @@ public class SharedChat extends Shared<Chat, ChatDiff> {
 		public ChatDiff exec(Chat value, ChatDiff diff, long collaboratorId) {
 			return ChatDiff.freezeLive(value.getLiveLinesSize());
 		}
+
+		public boolean needsToExec(Chat value, ChatDiff diff,
+				long collaboratorId) {
+			return !diff.getAddedLive().isEmpty();
+		}
 	}
 
 }

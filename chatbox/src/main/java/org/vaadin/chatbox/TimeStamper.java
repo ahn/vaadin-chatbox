@@ -35,4 +35,8 @@ public class TimeStamper implements DiffTask<Chat, ChatDiff> {
 		}
 		return null;
 	}
+
+	public boolean needsToExec(Chat value, ChatDiff diff, long collaboratorId) {
+		return true;
+	}
 }

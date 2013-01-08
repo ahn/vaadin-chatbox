@@ -155,13 +155,13 @@ public class VChatBox extends VAbstractDiffSyncComponent<Chat, ChatDiff>
 	public void userClicked(String userId) {
 		getClient().updateVariable(getPaintableId(), "userclicked", userId,
 				false);
-		valueChangedSendEvenIfIdentityASAP();
+		valueChanged(SendUrgency.ALWAYS_ASAP);
 	}
 
 	public void itemClicked(String itemId) {
 		getClient().updateVariable(getPaintableId(), "itemclicked", itemId,
 				false);
-		valueChangedSendEvenIfIdentityASAP();
+		valueChanged(SendUrgency.ALWAYS_ASAP);
 	}
 
 }
