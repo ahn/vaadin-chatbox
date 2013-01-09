@@ -12,12 +12,10 @@ public class TimeStamper implements DiffTask<Chat, ChatDiff> {
 	private final static SimpleDateFormat longFormat = new SimpleDateFormat("[yyyy-MM-dd HH:mm z]");
 	private final static SimpleDateFormat shortFormat = new SimpleDateFormat("[HH:mm]");
 	
-	private final long collId;
 	private int latestMinute = -1;
 	private int latestDay = -1;
 	
-	public TimeStamper(long collId) {
-		this.collId = collId;
+	public TimeStamper() {
 	}
 
 	public ChatDiff exec(Chat value, ChatDiff diff, long collaboratorId) {
