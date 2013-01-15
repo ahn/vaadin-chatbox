@@ -13,6 +13,9 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+// NOTE: To update changes from server to client, we should
+// use some addon like Refresher or DontPush OzoneLayer.
+
 @SuppressWarnings("serial")
 public class ChatBoxDemo extends Application {
 
