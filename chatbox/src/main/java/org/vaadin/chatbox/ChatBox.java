@@ -1,44 +1,104 @@
 package org.vaadin.chatbox;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.vaadin.chatbox.SharedChat.ChatListener;
 import org.vaadin.chatbox.client.ChatBoxClientRpc;
 import org.vaadin.chatbox.client.ChatBoxServerRpc;
 import org.vaadin.chatbox.client.ChatBoxState;
+import org.vaadin.chatbox.client.ChatLine;
+import org.vaadin.chatbox.client.ChatUser;
 
-import com.vaadin.shared.MouseEventDetails;
+import com.vaadin.annotations.StyleSheet;
+import com.vaadin.ui.UI;
 
-// This is the server-side UI component that provides public API 
-// for ChatBox
-public class ChatBox extends com.vaadin.ui.AbstractComponent {
-
-	private int clickCount = 0;
+@StyleSheet("chatbox.css")
+@SuppressWarnings("serial")
+public class ChatBox extends com.vaadin.ui.AbstractComponent implements ChatListener {
 
 	// To process events from the client, we implement ServerRpc
 	private ChatBoxServerRpc rpc = new ChatBoxServerRpc() {
-
-		// Event received from client - user clicked our widget
-		public void clicked(MouseEventDetails mouseDetails) {
-			
-			// Send nag message every 5:th click with ClientRpc
-			if (++clickCount % 5 == 0) {
-				getRpcProxy(ChatBoxClientRpc.class)
-						.alert("Ok, that's enough!");
-			}
-			
-			// Update shared state. This state update is automatically 
-			// sent to the client. 
-			getState().text = "You have clicked " + clickCount + " times";
+		@Override
+		public void lineAdded(ChatBoxState.Line line) {
+			chat.addLine(ChatBoxState.Line.convert(line));
 		}
 	};
 
-	public ChatBox() {
+	private SharedChat chat;
 
-		// To receive events from the client, we register ServerRpc
+	private UI ui;
+
+	private int numFrozenLines = 0;
+
+	public ChatBox(SharedChat chat) {
+		super();
+		setWidth("200px"); // ?
+		setHeight("200px"); // ?
+		this.chat = chat;
 		registerRpc(rpc);
 	}
-
-	// We must override getState() to cast the state to ChatBoxState
+	
+	public void setUser(ChatUser user) {
+		ChatBoxState.User u = new ChatBoxState.User();
+		u.id = user.getId();
+		u.name = user.getName();
+		u.style = user.getStyle();
+		getState(true).user = u;
+	}
+	
+	public void setShowSendButton(boolean show) {
+		getState(true).showSendButton = show;
+	}
+	
+	@Override
+	public void attach() {
+		super.attach();
+		this.ui = UI.getCurrent();
+		chat.addListener(this);
+	}
+	
+	@Override
+	public void detach() {
+		chat.removeListener(this);
+		super.detach();
+	}
+	
+	@Override
+	public ChatBoxState getState(boolean markAsDirty) {
+		return (ChatBoxState) super.getState(markAsDirty);
+	}
+	
 	@Override
 	public ChatBoxState getState() {
 		return (ChatBoxState) super.getState();
+	}
+
+	@Override
+	public void lineAdded(ChatLine line) {
+		ui.access(new Runnable() {
+			@Override
+			public void run() {
+				ChatBox.this.markAsDirty();
+			}
+		});
+	}
+	
+	@Override
+    public void beforeClientResponse(boolean initial) {
+		super.beforeClientResponse(initial);
+		List<ChatLine> lines = chat.getLinesStartingFrom(numFrozenLines);
+		if (!lines.isEmpty()) {
+			numFrozenLines += lines.size();
+			ArrayList<ChatBoxState.Line> lis = new ArrayList<ChatBoxState.Line>(lines.size());
+			for (ChatLine line : lines) {
+				lis.add(ChatBoxState.Line.convert(line));
+			}
+			getRpcProxy(ChatBoxClientRpc.class).addLines(lis);
+		}
+	}
+
+	public void focusToInputField() {
+		getRpcProxy(ChatBoxClientRpc.class).focus();
 	}
 }

@@ -14,24 +14,12 @@
 		<vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
 	</properties>
 
-    <!--     
-	<organization>
-		<name>My Name</name>
-		<url>https://github.com/mygithubaccount/ChatBox/</url>
-	</organization>
-    
-	<scm>
-		<url>git://github.com/mygithubaccount/ChatBox.git</url>
-		<connection>scm:git:git://github.com/mygithubaccount/ChatBox.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com:/mygithubaccount/${ComponentClassName}.git</developerConnection>
-		<tag>ChatBox add-on for Vaadin</tag>
-	</scm>
-
-	<issueManagement>
-		<system>GitHub</system>
-		<url>https://github.com/mygithubaccount/ChatBox/issues</url>
-	</issueManagement>
-    -->
+	<!-- <organization> <name>My Name</name> <url>https://github.com/mygithubaccount/ChatBox/</url> 
+		</organization> <scm> <url>git://github.com/mygithubaccount/ChatBox.git</url> 
+		<connection>scm:git:git://github.com/mygithubaccount/ChatBox.git</connection> 
+		<developerConnection>scm:git:ssh://git@github.com:/mygithubaccount/${ComponentClassName}.git</developerConnection> 
+		<tag>ChatBox add-on for Vaadin</tag> </scm> <issueManagement> <system>GitHub</system> 
+		<url>https://github.com/mygithubaccount/ChatBox/issues</url> </issueManagement> -->
 
 	<licenses>
 		<license>
@@ -88,6 +76,11 @@
 			<version>${vaadin.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-push</artifactId>
+			<version>${vaadin.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.4</version>
@@ -126,10 +119,10 @@
 			</plugin>
 
 			<plugin>
-		        <artifactId>maven-war-plugin</artifactId>
-		        <version>2.3</version>
-		        <configuration>
-		        	<packagingExcludes>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<packagingExcludes>
 						**/VAADIN/gwt-unitCache/**,
 						**/VAADIN/widgetsets/WEB-INF/**,
 						**/WEB-INF/lib/servlet-api-*.jar,
@@ -140,7 +133,7 @@
 						**/WEB-INF/classes/themes/**,
 						**/WEB-INF/classes/widgetsets/**
 					</packagingExcludes>
-		        </configuration>
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -180,14 +173,16 @@
 					<webApp>
 						<contextPath>/</contextPath>
 					</webApp>
+					<scanIntervalSeconds>2</scanIntervalSeconds>
 				</configuration>
 			</plugin>
 
 		</plugins>
-	
+
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
