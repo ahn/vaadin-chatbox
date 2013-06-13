@@ -29,7 +29,7 @@ public class ChatBox extends com.vaadin.ui.AbstractComponent implements ChatList
 
 	private UI ui;
 
-	private int numFrozenLines = 0;
+	private int numFrozenLinesOnClient = 0;
 
 	public ChatBox(SharedChat chat) {
 		super();
@@ -87,9 +87,14 @@ public class ChatBox extends com.vaadin.ui.AbstractComponent implements ChatList
 	@Override
     public void beforeClientResponse(boolean initial) {
 		super.beforeClientResponse(initial);
-		List<ChatLine> lines = chat.getLinesStartingFrom(numFrozenLines);
+		
+		if (initial) {
+			numFrozenLinesOnClient = 0;
+		}
+		
+		List<ChatLine> lines = chat.getLinesStartingFrom(numFrozenLinesOnClient);
 		if (!lines.isEmpty()) {
-			numFrozenLines += lines.size();
+			numFrozenLinesOnClient += lines.size();
 			ArrayList<ChatBoxState.Line> lis = new ArrayList<ChatBoxState.Line>(lines.size());
 			for (ChatLine line : lines) {
 				lis.add(ChatBoxState.Line.convert(line));
