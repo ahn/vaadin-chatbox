@@ -15,7 +15,8 @@ import com.vaadin.ui.UI;
 
 @StyleSheet("chatbox.css")
 @SuppressWarnings("serial")
-public class ChatBox extends com.vaadin.ui.AbstractComponent implements ChatListener {
+public class ChatBox extends com.vaadin.ui.AbstractComponent implements
+		ChatListener {
 
 	// To process events from the client, we implement ServerRpc
 	private ChatBoxServerRpc rpc = new ChatBoxServerRpc() {
@@ -38,37 +39,33 @@ public class ChatBox extends com.vaadin.ui.AbstractComponent implements ChatList
 		this.chat = chat;
 		registerRpc(rpc);
 	}
-	
+
 	public void setUser(ChatUser user) {
-		ChatBoxState.User u = new ChatBoxState.User();
-		u.id = user.getId();
-		u.name = user.getName();
-		u.style = user.getStyle();
-		getState(true).user = u;
+		getState(true).user = ChatBoxState.User.convert(user);
 	}
-	
+
 	public void setShowSendButton(boolean show) {
 		getState(true).showSendButton = show;
 	}
-	
+
 	@Override
 	public void attach() {
 		super.attach();
 		this.ui = UI.getCurrent();
 		chat.addListener(this);
 	}
-	
+
 	@Override
 	public void detach() {
 		chat.removeListener(this);
 		super.detach();
 	}
-	
+
 	@Override
 	public ChatBoxState getState(boolean markAsDirty) {
 		return (ChatBoxState) super.getState(markAsDirty);
 	}
-	
+
 	@Override
 	public ChatBoxState getState() {
 		return (ChatBoxState) super.getState();
@@ -83,19 +80,21 @@ public class ChatBox extends com.vaadin.ui.AbstractComponent implements ChatList
 			}
 		});
 	}
-	
+
 	@Override
-    public void beforeClientResponse(boolean initial) {
+	public void beforeClientResponse(boolean initial) {
 		super.beforeClientResponse(initial);
-		
+
 		if (initial) {
 			numFrozenLinesOnClient = 0;
 		}
-		
-		List<ChatLine> lines = chat.getLinesStartingFrom(numFrozenLinesOnClient);
+
+		List<ChatLine> lines = chat
+				.getLinesStartingFrom(numFrozenLinesOnClient);
 		if (!lines.isEmpty()) {
 			numFrozenLinesOnClient += lines.size();
-			ArrayList<ChatBoxState.Line> lis = new ArrayList<ChatBoxState.Line>(lines.size());
+			ArrayList<ChatBoxState.Line> lis = new ArrayList<ChatBoxState.Line>(
+					lines.size());
 			for (ChatLine line : lines) {
 				lis.add(ChatBoxState.Line.convert(line));
 			}
