@@ -1,11 +1,13 @@
 package org.vaadin.chatbox.client;
 
+import java.io.Serializable;
+
 import com.vaadin.shared.annotations.DelegateToWidget;
 
 @SuppressWarnings("serial")
 public class ChatBoxState extends com.vaadin.shared.AbstractComponentState {
 	
-	public static class User {
+	public static class User implements Serializable {
 		public String id;
 		public String name;
 		public String style;
@@ -27,7 +29,7 @@ public class ChatBoxState extends com.vaadin.shared.AbstractComponentState {
 		}
 	}
 	
-	public static class Line {
+	public static class Line implements Serializable {
 		public User user;
 		public String text;
 		public static Line convert(ChatLine cl) {

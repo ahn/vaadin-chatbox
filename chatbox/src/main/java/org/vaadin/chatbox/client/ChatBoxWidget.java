@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -178,13 +179,6 @@ public class ChatBoxWidget extends DockLayoutPanel {
 
 	public void setShowSendButton(boolean show) {
 		sendButton.setVisible(show);
-		refreshWidth();
-	}
-
-	@Override
-	public void setWidth(String width) {
-		super.setWidth(width);
-		refreshWidth();
 	}
 	
 	public void setShowMyNick(boolean show) {
@@ -199,24 +193,43 @@ public class ChatBoxWidget extends DockLayoutPanel {
 
 		setStylePrimaryName(CLASSNAME);
 		
+		createInputPanel();
 		this.add(chatPanel);
+		
 		setEnabled(false);
 	}
 	
 	private void createInputPanel() {
 		// XXX?
-		this.remove(chatPanel);
+//		this.remove(chatPanel);
+
 		inputPanel = new HorizontalPanel();
-		DOM.setStyleAttribute(inputPanel.getElement(), "cssFloat", "right");
-		inputPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		inputPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		inputPanel.setWidth("100%");
+		inputPanel.setHeight("100%");
+		
+		chatInput.setWidth("100%");
+		
+		SimplePanel spacer = new SimplePanel();
+		spacer.setWidth("10px");
+		
 		inputPanel.add(nameLabel);
 		inputPanel.add(chatInput);
+		inputPanel.add(spacer);
 		inputPanel.add(sendButton);
+		
+		inputPanel.setCellWidth(chatInput, "100%");
+		
+		inputPanel.setCellVerticalAlignment(nameLabel, HasVerticalAlignment.ALIGN_MIDDLE);
+		inputPanel.setCellVerticalAlignment(chatInput, HasVerticalAlignment.ALIGN_MIDDLE);
+		inputPanel.setCellVerticalAlignment(sendButton, HasVerticalAlignment.ALIGN_MIDDLE);
+		
 		this.addSouth(inputPanel, 28);
-		this.add(chatPanel);
+		
+		
+//		this.add(chatPanel);
 	}
+	
+	
 	
 	private void removeInputPanel() {
 		// XXX?
@@ -263,13 +276,17 @@ public class ChatBoxWidget extends DockLayoutPanel {
 	}
 
 	private void setEnabled(boolean enable) {
-		if (enable && inputPanel==null) {
-			createInputPanel();
-		}
-		else if (!enable && inputPanel!=null) {
-			removeInputPanel();
-		}
+		inputPanel.setVisible(enable);
 	}
+	
+//	private void setEnabled(boolean enable) {
+//		if (enable && inputPanel==null) {
+//			createInputPanel();
+//		}
+//		else if (!enable && inputPanel!=null) {
+//			removeInputPanel();
+//		}
+//	}
 	
 	
 
@@ -287,13 +304,6 @@ public class ChatBoxWidget extends DockLayoutPanel {
 			setEnabled(true);
 		}
 		this.user = user;
-		refreshWidth();
-	}
-
-	private void refreshWidth() {
-		int MAGIC_NUMBER_PX = 12;
-		int w = getOffsetWidth()-nameLabel.getOffsetWidth()-sendButton.getOffsetWidth();
-		chatInput.setWidth((w-MAGIC_NUMBER_PX) + "px");
 	}
 
 	public List<ChatLine> getFrozenLines() {
@@ -301,6 +311,11 @@ public class ChatBoxWidget extends DockLayoutPanel {
 	}
 
 	private void freeze(int freezeLive) {
+		// extra check for initial
+		if (numLive==0) {
+			return;
+		}
+		
 		for (int i=0; i<freezeLive; ++i) {
 			liveLines.remove(0);
 			liveTable.removeRow(0);
@@ -316,6 +331,8 @@ public class ChatBoxWidget extends DockLayoutPanel {
 		int mine = 0;
 		for (ChatBoxState.Line line : lines) {
 			ChatLine li = ChatBoxState.Line.convert(line);
+
+			// assuming all the live lines by the user are added on this client... XXX
 			if (user!=null && user.equals(li.getUser())) {
 				mine++;
 			}
