@@ -1,10 +1,10 @@
 package org.vaadin.chatbox.client;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -13,11 +13,9 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -33,7 +31,7 @@ public class ChatBoxWidget extends DockLayoutPanel {
 	}
 
 	private LinkedList<TextInputListener> tiListeners = new LinkedList<TextInputListener>();
-	
+
 	private ArrayList<String> myHistory = new ArrayList<String>();
 	private int myHistoryAt = 0;
 
@@ -63,13 +61,13 @@ public class ChatBoxWidget extends DockLayoutPanel {
 	{
 		chatPanel.add(vp);
 	}
-	
+
 	private FlexTable chatTable = new FlexTable();
 	{
 		chatTable.setStylePrimaryName("FrozenLines");
 		vp.add(chatTable);
 	}
-	
+
 	private FlexTable liveTable = new FlexTable();
 	{
 		liveTable.setStylePrimaryName("LiveLines");
@@ -77,7 +75,7 @@ public class ChatBoxWidget extends DockLayoutPanel {
 	}
 
 	private HorizontalPanel inputPanel = null;
-	
+
 	private InlineLabel nameLabel = new InlineLabel();
 	{
 		nameLabel.setWordWrap(false);
@@ -95,12 +93,11 @@ public class ChatBoxWidget extends DockLayoutPanel {
 						if (!text.isEmpty()) {
 							if (myHistoryAt == myHistory.size()) {
 								myHistory.add(text);
-							}
-							else {
+							} else {
 								myHistory.set(myHistoryAt, text);
 							}
 						}
-						
+
 						String msg = myHistory.get(--myHistoryAt);
 						chatInput.setText(msg);
 						chatInput.setCursorPos(msg.length());
@@ -139,15 +136,15 @@ public class ChatBoxWidget extends DockLayoutPanel {
 			}
 		});
 	}
-	
+
 	private Button sendButton = new Button("Send");
 
 	private int numFrozen = 0;
 
 	private int numLive = 0;
-	
+
 	private ChatUser user;
-	
+
 	{
 		sendButton.setWidth("60px");
 		sendButton.addClickHandler(new ClickHandler() {
@@ -156,9 +153,7 @@ public class ChatBoxWidget extends DockLayoutPanel {
 			}
 		});
 	}
-	
 
-	
 	private boolean newChatLine() {
 		if (!chatInput.getText().isEmpty()) {
 			String msg = chatInput.getText();
@@ -170,17 +165,17 @@ public class ChatBoxWidget extends DockLayoutPanel {
 		}
 		return false;
 	}
-	
+
 	private void addLiveLine(String msg) {
 		ChatLine line = new ChatLine(msg, user);
 		addLiveLine(line);
-		
+
 	}
 
 	public void setShowSendButton(boolean show) {
 		sendButton.setVisible(show);
 	}
-	
+
 	public void setShowMyNick(boolean show) {
 		nameLabel.setVisible(show);
 	}
@@ -192,50 +187,38 @@ public class ChatBoxWidget extends DockLayoutPanel {
 		super(Style.Unit.PX);
 
 		setStylePrimaryName(CLASSNAME);
-		
+
 		createInputPanel();
 		this.add(chatPanel);
-		
+
 		setEnabled(false);
 	}
-	
-	private void createInputPanel() {
-		// XXX?
-//		this.remove(chatPanel);
 
+	private void createInputPanel() {
 		inputPanel = new HorizontalPanel();
 		inputPanel.setWidth("100%");
 		inputPanel.setHeight("100%");
-		
+
 		chatInput.setWidth("100%");
-		
+
 		SimplePanel spacer = new SimplePanel();
 		spacer.setWidth("10px");
-		
+
 		inputPanel.add(nameLabel);
 		inputPanel.add(chatInput);
 		inputPanel.add(spacer);
 		inputPanel.add(sendButton);
-		
+
 		inputPanel.setCellWidth(chatInput, "100%");
-		
-		inputPanel.setCellVerticalAlignment(nameLabel, HasVerticalAlignment.ALIGN_MIDDLE);
-		inputPanel.setCellVerticalAlignment(chatInput, HasVerticalAlignment.ALIGN_MIDDLE);
-		inputPanel.setCellVerticalAlignment(sendButton, HasVerticalAlignment.ALIGN_MIDDLE);
-		
+
+		inputPanel.setCellVerticalAlignment(nameLabel,
+				HasVerticalAlignment.ALIGN_MIDDLE);
+		inputPanel.setCellVerticalAlignment(chatInput,
+				HasVerticalAlignment.ALIGN_MIDDLE);
+		inputPanel.setCellVerticalAlignment(sendButton,
+				HasVerticalAlignment.ALIGN_MIDDLE);
+
 		this.addSouth(inputPanel, 28);
-		
-		
-//		this.add(chatPanel);
-	}
-	
-	
-	
-	private void removeInputPanel() {
-		// XXX?
-		this.remove(chatPanel);
-		this.remove(inputPanel);
-		this.add(chatPanel);
 	}
 
 	private void fireLiveLineAdded(ChatLine line) {
@@ -247,16 +230,26 @@ public class ChatBoxWidget extends DockLayoutPanel {
 	public void addFrozenLine(ChatLine line) {
 		chatTable.setWidget(numFrozen, 0, new ChatWidgetLine(line, this));
 		frozenLines.add(line);
-		chatPanel.scrollToBottom();
+		scrollToBottom();
 		++numFrozen;
 	}
-	
+
 	private void addLiveLine(ChatLine line) {
 		liveTable.setWidget(numLive, 0, new ChatWidgetLine(line, this));
 		liveLines.add(line);
-		chatPanel.scrollToBottom();
+		scrollToBottom();
 		++numLive;
 		fireLiveLineAdded(line);
+	}
+
+	private void scrollToBottom() {
+		// http://stackoverflow.com/questions/6484319/scrollpanel-scrolltobottom-not-working-as-expected
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+			@Override
+			public void execute() {
+				chatPanel.scrollToBottom();
+			}
+		});
 	}
 
 	public List<ChatLine> getLiveLines() {
@@ -278,53 +271,38 @@ public class ChatBoxWidget extends DockLayoutPanel {
 	private void setEnabled(boolean enable) {
 		inputPanel.setVisible(enable);
 	}
-	
-//	private void setEnabled(boolean enable) {
-//		if (enable && inputPanel==null) {
-//			createInputPanel();
-//		}
-//		else if (!enable && inputPanel!=null) {
-//			removeInputPanel();
-//		}
-//	}
-	
-	
 
 	public void setUser(ChatBoxState.User u) {
 		ChatUser user = ChatBoxState.User.convert(u);
 		if (sameUser(this.user, user)) {
 			return;
 		}
-		if (user==null) {
+		if (user == null) {
 			setEnabled(false);
-		}
-		else {
-			nameLabel.setText(user.getName()+":");
+		} else {
+			nameLabel.setText(user.getName() + ":");
 			nameLabel.setStylePrimaryName(user.getStyle());
 			setEnabled(true);
 		}
 		this.user = user;
-	}
-
-	public List<ChatLine> getFrozenLines() {
-		return Collections.unmodifiableList(frozenLines);
+		scrollToBottom(); // ?
 	}
 
 	private void freeze(int freezeLive) {
 		// extra check for initial
-		if (numLive==0) {
+		if (numLive == 0) {
 			return;
 		}
-		
-		for (int i=0; i<freezeLive; ++i) {
+
+		for (int i = 0; i < freezeLive; ++i) {
 			liveLines.remove(0);
 			liveTable.removeRow(0);
 			--numLive;
 		}
 	}
-	
+
 	private static boolean sameUser(ChatUser u1, ChatUser u2) {
-		return u1==null ? u2==null : u1.equals(u2);
+		return u1 == null ? u2 == null : u1.equals(u2);
 	}
 
 	public void addFrozenLines(List<ChatBoxState.Line> lines) {
@@ -332,21 +310,20 @@ public class ChatBoxWidget extends DockLayoutPanel {
 		for (ChatBoxState.Line line : lines) {
 			ChatLine li = ChatBoxState.Line.convert(line);
 
-			// assuming all the live lines by the user are added on this client... XXX
-			if (user!=null && user.equals(li.getUser())) {
+			// assuming all the live lines by the user are added on this
+			// client... XXX
+			if (user != null && user.equals(li.getUser())) {
 				mine++;
 			}
 			frozenLines.add(li);
 			chatTable.setWidget(numFrozen++, 0, new ChatWidgetLine(li, this));
 		}
 		freeze(mine);
-		chatPanel.scrollToBottom();
+		scrollToBottom();
 	}
 
 	public void focusToInputField() {
-		if (inputPanel!=null) {
-			chatInput.setFocus(true);
-		}
+		chatInput.setFocus(true);
 	}
 
 }
