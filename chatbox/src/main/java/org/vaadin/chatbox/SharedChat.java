@@ -24,8 +24,10 @@ public class SharedChat {
 		addLine(new ChatLine(message));
 	}
 	
-	public synchronized void addLine(ChatLine line) {
-		lines.add(line);
+	public void addLine(ChatLine line) {
+		synchronized (this) {
+			lines.add(line);
+		}
 		fireLineAdded(line);
 	}
 	
