@@ -5,6 +5,7 @@ import org.vaadin.chatbox.ChatBox;
 import org.vaadin.chatbox.client.ChatLine;
 import org.vaadin.chatbox.client.ChatUser;
 
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Title;
 import com.vaadin.server.VaadinRequest;
@@ -20,8 +21,10 @@ import com.vaadin.ui.Button.ClickEvent;
 @Title("ChatBox Add-on Demo")
 @SuppressWarnings("serial")
 @Push
+@PreserveOnRefresh
 public class DemoUI extends UI {
 	
+	// A static instance so that everybody gets the same instance of SharedChat.
 	private static SharedChat chat = new SharedChat();
 	static {
 		chat.addLine("Welcome to chat!");
@@ -31,7 +34,6 @@ public class DemoUI extends UI {
 
 	@Override
 	protected void init(VaadinRequest request) {
-		
 		
 		final ChatBox chatbox = new ChatBox(chat);
 		chatbox.setShowSendButton(false);
@@ -47,7 +49,7 @@ public class DemoUI extends UI {
 			public void buttonClick(ClickEvent event) {
 				ChatUser user = ChatUser.newUser(tf.getValue());
 				chatbox.setUser(user);
-				chat.addLine(new ChatLine(user+" joined."));
+				chat.addLine(new ChatLine(user.getName()+" joined."));
 				chatbox.focusToInputField();
 			}
 		});
