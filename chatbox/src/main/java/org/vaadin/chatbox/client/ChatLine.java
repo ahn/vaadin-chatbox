@@ -2,10 +2,6 @@ package org.vaadin.chatbox.client;
 
 /**
  * One line of chat.
- * 
- * IMPORTANT: because of concurrent access, this class must be effectively immutable!
- * the setters are just for Vaadin transportation. (TODO: could do a separate class for that?)
- * 
  */
 public class ChatLine {
 
