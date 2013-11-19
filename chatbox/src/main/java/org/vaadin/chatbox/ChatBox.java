@@ -11,7 +11,7 @@ import org.vaadin.chatbox.client.ChatLine;
 import org.vaadin.chatbox.client.ChatUser;
 
 import com.vaadin.annotations.StyleSheet;
-import com.vaadin.ui.UI;
+import com.vaadin.server.VaadinSession;
 
 @StyleSheet("chatbox.css")
 @SuppressWarnings("serial")
@@ -27,8 +27,6 @@ public class ChatBox extends com.vaadin.ui.AbstractComponent implements
 	};
 
 	private SharedChat chat;
-
-	private UI ui;
 
 	private int numFrozenLinesOnClient = 0;
 
@@ -51,7 +49,6 @@ public class ChatBox extends com.vaadin.ui.AbstractComponent implements
 	@Override
 	public void attach() {
 		super.attach();
-		this.ui = UI.getCurrent();
 		chat.addListener(this);
 	}
 
@@ -73,7 +70,12 @@ public class ChatBox extends com.vaadin.ui.AbstractComponent implements
 
 	@Override
 	public void lineAdded(ChatLine line) {
-		ui.access(new Runnable() {
+		// TODO: not exactly sure how we should sync here...
+		VaadinSession session = getSession();
+		if (session==null) {
+			return;
+		}
+		session.access(new Runnable() {
 			@Override
 			public void run() {
 				ChatBox.this.markAsDirty();
